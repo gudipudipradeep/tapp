@@ -4,7 +4,7 @@ import "./styles.css";
 import { Workbook } from "@fortune-sheet/react";
 import "@fortune-sheet/react/dist/index.css"
 import { produce } from "immer";
-import { Sheet } from "@fortune-sheet/core";
+import { Sheet, Op, colors } from "@fortune-sheet/core";
 
 
 
@@ -15,8 +15,8 @@ const settings =  [
     status: 1,
 	defaultRowHeight: 20,
 	scrollLeft: 0,
-	column: 25,
-	row: 20,
+	column: 26,
+	row: 10,
 	config: {rowlen: {"0": 50},columnlen:{"0":150,"3":130,"0":150,"6":100,"14":130,"19":130,"13":80,"10":100},colhidden: {"4": 0,"5": 0,"5": 0,"11": 0,"12": 0,"15": 0,"16": 0,"17": 0,"18": 0}},
     celldata: [ {"r": 0,"c": 0,"v": {ct: {fa: "General", t: "g"},m:"Nameofthescript",v:"Name of the script","bg": "#858a7e","ht":"0"},},
 			{"r": 0,"c": 1,"v": {ct: {fa: "General", t: "g"},m:"BuyRate",v:"Buy Rate","bg": "#00ff00","ht":"0"},},
@@ -41,9 +41,18 @@ const settings =  [
 		]
   },
   {
-	"name": "Sheet3",
+	"name": "Calculation",
 	"color": "",
 	"id": "2",
+	"status": 0,
+	"order": 2,
+	"celldata": [],
+	"config": {},
+  },
+  {
+	"name": "General",
+	"color": "",
+	"id": "3",
 	"status": 0,
 	"order": 2,
 	"celldata": [],
@@ -52,32 +61,73 @@ const settings =  [
  ];
 
 const App = () => {
- const [sheets, setSheets] = useState(settings);
- const workbookRef = useRef(null);
+  const [data, setData] = useState(settings);
+  const workbookRef = useRef(null);
+  const lastSelection = useRef();
 // const [error, setError] = useState(false);
-// useEffect(() => {
-//   const interval = setInterval(() => {
-//     setSheets((prev) => {
-//       return produce(prev, (draft) => {
-//		   console.log("###########################");
-//		   console.log(prev);
-//			//prev[0]["data"][1] = prev[0]["data"][0];
-//			setSheets(prev);
-//       });
-//     });
-//   }, 1000);
-//   return () => clearInterval(interval);
-// }, []);
+  useEffect(() => {
+   const interval = setInterval(() => {
+     setData((prev) => {
+       return produce(prev, (draft) => {
+		   console.log("###########################");
+		   //console.log(draft[0]["data"]);
+		   //prev[0]["data"][1] = prev[0]["data"][0];
+       });
+     });
+   }, 1000);
+   return () => clearInterval(interval);
+  }, []);
 
+  const onOp = useCallback((op: Op[]) => {
+    //const socket = workbookRef.current;
+    console.log(JSON.stringify({ req: "op", data: op }));
+  }, []);
+  
   const onChange = useCallback((prev: Sheet[]) => {
-	console.log(workbookRef.current?.getCellValue(0, 0))
-	console.log(Math.random());
-	workbookRef.current?.setCellValue(2, 2, "=A1");
-	setSheets(prev);
+	//console.log(workbookRef.current?.getCellValue(0, 0))
+	//console.log(Math.random());
+	//workbookRef.current?.setCellValue(2, 2, "=A1");
+	setData(prev);
   }, []);
  
+  const afterSelectionChange = useCallback((sheetId: string, selection: Selection) => {
+      const socket = workbookRef.current;
+      const s = {
+        r: selection.row[0],
+        c: selection.column[0],
+      };
+	  console.log(s);
+      if (
+        lastSelection.current?.r === s.r &&
+        lastSelection.current?.c === s.c
+      ) {
+		console.log(s);
+		console.log(lastSelection.current?.r);
+		console.log(lastSelection.current?.c);
+		console.log("+++++++++++++++");
+        return;
+      }
+	  console.log("-------------------");
+		console.log(s);
+		console.log(lastSelection.current?.r);
+		console.log(lastSelection.current?.c);
+      lastSelection.current = s;
+      //socket.send(
+      //  JSON.stringify({
+      //    req: "addPresences",
+      //    data: [
+      //      {
+      //        sheetId,
+      //        username,
+      //        userId,
+      //        selection: s,
+      //      },
+      //    ],
+      //  })
+      //);
+    },[]);
   
-  return <div id="root"><Workbook  ref={workbookRef} data={settings} onChange={onChange} /></div>;
+  return <div id="root"><Workbook  ref={workbookRef} data={data}  onOp={onOp} onChange={onChange} hooks={{ afterSelectionChange,}} /></div>;
 };
 
 export default App;
