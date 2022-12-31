@@ -13,4 +13,8 @@ html, #app{
 }
 /* div.luckysheet-scrollbars{
   width: 96% !important;
-} */
+} 
+*/
+div#luckysheet-bottom-controll-row > input{
+  display: none;
+}

@@ -11,7 +11,7 @@ class Modal extends React.Component {
   render() {
     return /*#__PURE__*/React.createElement("div", { className: "Modal" }, /*#__PURE__*/
     React.createElement(Logo, null), /*#__PURE__*/
-    React.createElement("form", { onSubmit: this.props.onSubmit }, /*#__PURE__*/
+    React.createElement("form", { onSubmit: this.props.onSubmit, method: 'post'}, /*#__PURE__*/
     React.createElement(Input, { type: "text", name: "username", placeholder: "username" }), /*#__PURE__*/
     React.createElement(Input, { type: "password", name: "password", placeholder: "password" }), /*#__PURE__*/
     React.createElement("button", null, "Sign In")), /*#__PURE__*/
