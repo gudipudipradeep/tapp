@@ -8,9 +8,11 @@ import axios from 'axios';
 import sha256 from 'crypto-js/sha256';
 import totp from "totp-generator";
 
-//axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
-//axios.defaults.headers.common['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, , Content-Type, Accept';
+axios.defaults.headers.common['Access-Control-Allow-Credentials'] = 'true';
+axios.defaults.headers.common['Access-Control-Allow-Headers'] = 'Access-Control-Allow-Headers, Origin, X-Requested-With, Content-Type, Accept';
+
 
 const authUrl = "https://api.shoonya.com/NorenWClientTP/QuickAuth";
 
@@ -48,11 +50,11 @@ class Controllers extends React.Component {
 	  } catch (error) {
 	    console.log(error);
 	    this.setState({
-		  isVisible: false },
+		  isVisible: true },
 	    function () {
 		  console.log(this.state.isVisible);
 	    });
-	    return false;
+	    return true;
 	   }
     };
 	getData().then(response => {console.log(response.status)});
