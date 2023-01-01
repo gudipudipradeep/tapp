@@ -6,6 +6,7 @@ import "@fortune-sheet/react/dist/index.css"
 import { produce } from "immer";
 import { Sheet, Op, colors } from "@fortune-sheet/core";
 import axios from 'axios';
+import RestApi from "./RestApi";
 
 const tappUrl = "https://api.shoonya.com/NorenWClientTP/";
 const settings =  [
@@ -70,7 +71,7 @@ class App extends React.Component {
 	this.onChange = this.onChange.bind(this);
 	this.onOp = this.onOp.bind(this);
 	this.state = {data: settings};
-	this.session_data = JSON.parse(sessionStorage.getItem('session', null));
+	//this.session_data = JSON.parse(sessionStorage.getItem('session', null));
   }	
 //  const session_data = JSON.parse(sessionStorage.getItem('session', null));
 //  axios.post(tappUrl+"PositionBook", 'jData='+JSON.stringify({"uid":session_data["uid"], "actid": session_data["actid"]})+'&jKey='+session_data["susertoken"])
@@ -120,7 +121,7 @@ class App extends React.Component {
   }
   
   render() {
-	return (<div id="root"><Workbook  data={this.state.data} row={10} column={22} addRows={10} ref={this.workbookRef} onChange={this.onChange} onOp={this.onOp}/></div>);
+	return (<div id="root"><Workbook  data={this.state.data} row={10} column={22} ref={this.workbookRef} onChange={this.onChange} onOp={this.onOp}/></div>);
   } 
 }
 
